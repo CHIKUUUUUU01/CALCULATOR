@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Classy Scientific Calculator</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    font-family:Segoe UI, sans-serif;
+}
+
+.calculator{
+    width:370px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 0 30px rgba(0,0,0,0.7);
+}
+
+.display{
+    height:70px;
+    background:#000;
+    color:#00ffcc;
+    font-size:26px;
+    border-radius:15px;
+    padding:15px;
+    box-sizing:border-box;
+    text-align:right;
+    overflow-x:auto;
+}
+
+.buttons{
+    margin-top:15px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+button{
+    height:55px;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    cursor:pointer;
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#00ffcc;
+    color:#000;
+    transform:scale(1.05);
+}
+
+.operator{ background:rgba(0,255,204,0.3); }
+.equal{ background:#00ffcc; color:#000; font-weight:bold; }
+.clear{ background:#ff3b3b; }
+.trig{ background:rgba(255,215,0,0.4); }
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+    <div class="display" id="display">0</div>
+
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button onclick="deleteLast()">DEL</button>
+        <button onclick="append('(')">(</button>
+        <button onclick="append(')')">)</button>
+
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button class="operator" onclick="append('/')">÷</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button class="operator" onclick="append('*')">×</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button class="operator" onclick="append('-')">−</button>
+
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+        <button class="operator" onclick="append('+')">+</button>
+
+        <button onclick="square()">x²</button>
+        <button onclick="cube()">x³</button>
+        <button onclick="sqrt()">√</button>
+        <button onclick="cbrt()">∛</button>
+
+        <button class="trig" onclick="trig('sin')">sin</button>
+        <button class="trig" onclick="trig('cos')">cos</button>
+        <button class="trig" onclick="trig('tan')">tan</button>
+        <button onclick="power()">xʸ</button>
+
+        <button class="trig" onclick="trig('asin')">sin⁻¹</button>
+        <button class="trig" onclick="trig('acos')">cos⁻¹</button>
+        <button class="trig" onclick="trig('atan')">tan⁻¹</button>
+    </div>
+</div>
+
+<script>
+const display = document.getElementById("display");
+
+function append(val){
+    if(display.innerText === "0") display.innerText = "";
+    display.innerText += val;
+}
+
+function clearDisplay(){ display.innerText = "0"; }
+
+function deleteLast(){
+    display.innerText = display.innerText.slice(0,-1) || "0";
+}
+
+function calculate(){
+    try{
+        display.innerText = Function('"use strict";return ('+display.innerText+')')();
+    }catch{
+        display.innerText = "Error";
+    }
+}
+
+function square(){ display.innerText = Math.pow(Number(display.innerText),2); }
+function cube(){ display.innerText = Math.pow(Number(display.innerText),3); }
+function sqrt(){ display.innerText = Math.sqrt(Number(display.innerText)); }
+function cbrt(){ display.innerText = Math.cbrt(Number(display.innerText)); }
+
+function power(){
+    let b = prompt("Base?");
+    let p = prompt("Power?");
+    display.innerText = Math.pow(b,p);
+}
+
+function trig(t){
+    let v = Number(display.innerText);
+    let r = v * Math.PI / 180;
+    if(t==='sin') display.innerText = Math.sin(r);
+    if(t==='cos') display.innerText = Math.cos(r);
+    if(t==='tan') display.innerText = Math.tan(r);
+    if(t==='asin') display.innerText = Math.asin(v)*180/Math.PI;
+    if(t==='acos') display.innerText = Math.acos(v)*180/Math.PI;
+    if(t==='atan') display.innerText = Math.atan(v)*180/Math.PI;
+}
+
+/* KEYBOARD INPUT */
+document.addEventListener("keydown", e=>{
+    if("0123456789+-*/().".includes(e.key)) append(e.key);
+    if(e.key==="Enter") calculate();
+    if(e.key==="Backspace") deleteLast();
+    if(e.key==="Escape") clearDisplay();
+});
+</script>
+
+</body>
+</html>
